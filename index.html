@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Weather App</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" 
+        integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg==" 
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      background-size: cover; 
+      background-repeat: no-repeat; 
+      transition: background-image 0.5s ease; 
+    }
+
+    .container {
+      background-color: rgba(255, 255, 255, 0.8); 
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      max-width: 500px;
+      width: 100%;
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    #weatherInfo {
+      text-align: center;
+      margin-top: 20px;
+    }
+
+    #weatherInfo img {
+      width: 100px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Weather App</h1>
+    <div class="input-group mb-3">
+      <input type="text" id="cityInput" class="form-control" placeholder="Enter city name">
+      <button class="btn btn-primary" type="button" id="searchBtn">Search</button>
+    </div>
+    <div id="weatherInfo"></div>
+  </div>
+  <script>
+    const apiKey = "a9a9792d8e3238221d29279e5c1ae6d6"; // Replace with your actual API key
+    const searchBtn = document.getElementById("searchBtn");
+    const cityInput = document.getElementById("cityInput");
+    const weatherInfo = document.getElementById("weatherInfo");
+
+    searchBtn.addEventListener("click", () => {
+      const city = cityInput.value;
+      const apiUrl = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=metric`;
+
+      fetch(apiUrl)
+        .then(response => response.json())
+        .then(data => {
+          // Update background based on weather condition
+          const weatherMain = data.weather[0].main.toLowerCase();
+          switch (weatherMain) {
+            case 'clear':
+              document.body.style.backgroundImage = "url('https://images.unsplash.com/photo-1563954339037-240008f6f535?auto=format&fit=crop&q=80&w=1000&ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8')";
+              break;
+            case 'clouds':
+              document.body.style.backgroundImage = "url('https://images.unsplash.com/photo-1534088568595-a066f410beda?auto=format&fit=crop&q=80&w=1000&ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8')";
+              break;
+            case 'rain':
+              document.body.style.backgroundImage = "url('https://images.unsplash.com/photo-1519692933481-e162a57d6721?auto=format&fit=crop&q=80&w=1000&ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8')";
+              break;
+            case 'snow':
+              document.body.style.backgroundImage = "url('https://images.unsplash.com/photo-1478719059401-a4123ab2442d?auto=format&fit=crop&q=80&w=1000&ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8')";
+              break;
+            case 'thunderstorm':
+              document.body.style.backgroundImage = "url('https://images.unsplash.com/photo-1433619638722-3060734e30e5?auto=format&fit=crop&q=80&w=1000&ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8')";
+              break;
+            case 'drizzle':
+              document.body.style.backgroundImage = "url('https://images.unsplash.com/photo-1421081177127-339f586c9b49?auto=format&fit=crop&q=80&w=1000&ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8')";
+              break;
+            case 'atmosphere': 
+              document.body.style.backgroundImage = "url('https://images.unsplash.com/photo-1524919995279-a5909972047f?auto=format&fit=crop&q=80&w=1000&ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8')";
+              break;
+            default:
+              document.body.style.backgroundImage = "url('https://images.unsplash.com/photo-1519692933481-e162a57d6721?auto=format&fit=crop&q=80&w=1000&ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8')"; 
+          }
+
+          weatherInfo.innerHTML = `
+                        <h2>${data.name}, ${data.sys.country}</h2>
+                        <p>Temperature: ${data.main.temp} °C</p>
+                        <p>Feels like: ${data.main.feels_like} °C</p>
+                        <p>Weather: ${data.weather[0].description}</p>
+                        <img src="http://openweathermap.org/img/wn/${data.weather[0].icon}@2x.png" alt="Weather icon">
+                    `;
+        })
+        .catch(error => {
+          console.error("Error fetching weather data:", error);
+          weatherInfo.innerHTML = "<p>City not found or error occurred.</p>";
+        });
+    });
+  </script>
+</body>
+</html>
